@@ -17,11 +17,17 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.repository.find({
+      select: {
+        id: true,
+        email: true,
+        password: true,
+      },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.repository.findOne({ where: { id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
