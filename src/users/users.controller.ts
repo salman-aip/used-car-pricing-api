@@ -13,7 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CustomUserDTO } from './dto/user-custom.dto';
 
 @Controller('auth')
@@ -26,7 +26,8 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseInterceptors(new SerializeInterceptor(CustomUserDTO))
+  // @UseInterceptors(new SerializeInterceptor(CustomUserDTO))
+  @Serialize(CustomUserDTO)
   @Get()
   findAll() {
     return this.usersService.findAll();
