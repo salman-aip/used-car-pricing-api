@@ -7,6 +7,10 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { Observable, map } from 'rxjs';
 
+interface CustomSerializeProps {
+  new (...args: any[]): object;
+}
+
 export class SerializeInterceptor implements NestInterceptor {
   constructor(private readonly customDTO: any) {}
 
@@ -31,6 +35,6 @@ export class SerializeInterceptor implements NestInterceptor {
   }
 }
 
-export function Serialize(dto: any) {
+export function Serialize(dto: CustomSerializeProps) {
   return UseInterceptors(new SerializeInterceptor(dto));
 }
