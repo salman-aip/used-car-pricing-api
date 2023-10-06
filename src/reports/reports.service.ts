@@ -1,26 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Report } from './entities/report.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReportsService {
+  constructor(
+    @InjectRepository(Report) private readonly repository: Repository<Report>,
+  ) {}
+
   create(createReportDto: CreateReportDto) {
-    return 'This action adds a new report';
+    const report = this.repository.create(createReportDto);
+    return this.repository.save(report);
   }
 
   findAll() {
-    return `This action returns all reports`;
+    return this.repository.find({
+      select: {
+        id: true,
+        price: true,
+      },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} report`;
+    return this.repository.findOne({ where: { id } });
   }
 
-  update(id: number, updateReportDto: UpdateReportDto) {
-    return `This action updates a #${id} report`;
+  async update(id: number, updateReportDto: UpdateReportDto) {
+    const report = await this.findOne(id);
+
+    if (!report) {
+      throw new Error('user not found');
+    }
+
+    Object.assign(report, updateReportDto);
+    return this.repository.save(report);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} report`;
+  async remove(id: number) {
+    const report = await this.findOne(id);
+
+    if (!report) {
+      throw new Error('report not found');
+    }
+
+    return this.repository.remove(report);
   }
 }
