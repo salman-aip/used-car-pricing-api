@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -22,7 +23,11 @@ export class ReportsController {
 
   @Get()
   findAll() {
-    return this.reportsService.findAll();
+    const report = this.reportsService.findAll();
+    if (!report) {
+      throw new NotFoundException('reports not found');
+    }
+    return report;
   }
 
   @Get(':id')

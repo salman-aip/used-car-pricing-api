@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,7 +33,7 @@ export class ReportsService {
     const report = await this.findOne(id);
 
     if (!report) {
-      throw new Error('user not found');
+      throw new NotFoundException('user not found');
     }
 
     Object.assign(report, updateReportDto);
@@ -44,7 +44,7 @@ export class ReportsService {
     const report = await this.findOne(id);
 
     if (!report) {
-      throw new Error('report not found');
+      throw new NotFoundException('report not found');
     }
 
     return this.repository.remove(report);

@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateReportDto } from './create-report.dto';
+import { IsNumber, IsOptional } from 'class-validator';
 
-export class UpdateReportDto extends PartialType(CreateReportDto) {}
+export class UpdateReportDto {
+  @IsNumber()
+  @IsOptional()
+  price: number;
+}
