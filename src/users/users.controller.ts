@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { CustomUserDTO } from './dto/user-custom.dto';
 
 @Controller('auth')
 export class UsersController {
@@ -21,14 +26,22 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  // @UseInterceptors(new SerializeInterceptor(CustomUserDTO))
+  @Serialize(CustomUserDTO)
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(parseInt(id));
+    const user = this.usersService.findOne(parseInt(id));
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    return user;
   }
 
   @Patch(':id')
