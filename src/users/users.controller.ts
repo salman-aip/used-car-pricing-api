@@ -15,15 +15,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CustomUserDTO } from './dto/user-custom.dto';
+import { AuthService } from 'src/authentication/auth.service';
 
 @Controller('auth')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/signup')
   create(@Body() createUserDto: CreateUserDto) {
     // extract body information from the incoming request and validate against DTO
     return this.usersService.create(createUserDto);
+
+    // for auth user
+    return this.authService.signup(createUserDto.email, createUserDto.password);
   }
 
   // @UseInterceptors(new SerializeInterceptor(CustomUserDTO))
